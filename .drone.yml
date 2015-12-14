@@ -1,0 +1,24 @@
+build:
+  image: golang:1.5
+  commands:
+    - make deps
+    - make build
+    - make test
+
+publish:
+  docker:
+    username: drone
+    password: $$DOCKER_PASS
+    email: $$DOCKER_EMAIL
+    repo: plugins/drone-chef-supermarket
+    when:
+      branch: master
+
+plugin:
+  name: Chef Supermarket
+  desc: Publish files and artifacts to Chef Supermarket
+  type: publish
+  image: plugins/drone-chef-supermarket
+  labels:
+    - chef
+    - supermarket
