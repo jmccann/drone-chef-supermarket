@@ -21,4 +21,3 @@ plugin:
   image: plugins/drone-chef-supermarket
   labels:
     - chef
-    - supermarket
