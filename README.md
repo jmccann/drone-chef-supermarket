@@ -1,20 +1,41 @@
 # drone-chef-supermarket
 
 [![Build Status](http://beta.drone.io/api/badges/drone-plugins/drone-chef-supermarket/status.svg)](http://beta.drone.io/drone-plugins/drone-chef-supermarket)
+[![Coverage Status](https://aircover.co/badges/drone-plugins/drone-chef-supermarket/coverage.svg)](https://aircover.co/drone-plugins/drone-chef-supermarket)
 [![](https://badge.imagelayers.io/plugins/drone-chef-supermarket:latest.svg)](https://imagelayers.io/?images=plugins/drone-chef-supermarket:latest 'Get your own badge on imagelayers.io')
 
-Drone plugin for publishing files and artifacts to Chef Supermarket
+Drone plugin to publish files and artifacts to Chef Supermarket
 
-## Usage
+## Binary
+
+Build the binary using `make`:
+
+```
+make deps build
+```
+
+### Example
 
 ```sh
 ./drone-chef-supermarket <<EOF
 {
     "repo": {
         "clone_url": "git://github.com/drone/drone",
+        "owner": "drone",
+        "name": "drone",
         "full_name": "drone/drone"
     },
+    "system": {
+        "link_url": "https://beta.drone.io"
+    },
     "build": {
+        "number": 22,
+        "status": "success",
+        "started_at": 1421029603,
+        "finished_at": 1421029813,
+        "message": "Update the Readme",
+        "author": "johnsmith",
+        "author_email": "john.smith@gmail.com"
         "event": "push",
         "branch": "master",
         "commit": "436b7a6e2abaddfd35740527353e78a227ddcb2c",
@@ -32,10 +53,10 @@ EOF
 
 ## Docker
 
-Build the Docker container using `make`:
+Build the container using `make`:
 
 ```
-make deps build docker
+make deps docker
 ```
 
 ### Example
@@ -45,9 +66,21 @@ docker run -i plugins/drone-chef-supermarket <<EOF
 {
     "repo": {
         "clone_url": "git://github.com/drone/drone",
+        "owner": "drone",
+        "name": "drone",
         "full_name": "drone/drone"
     },
+    "system": {
+        "link_url": "https://beta.drone.io"
+    },
     "build": {
+        "number": 22,
+        "status": "success",
+        "started_at": 1421029603,
+        "finished_at": 1421029813,
+        "message": "Update the Readme",
+        "author": "johnsmith",
+        "author_email": "john.smith@gmail.com"
         "event": "push",
         "branch": "master",
         "commit": "436b7a6e2abaddfd35740527353e78a227ddcb2c",
