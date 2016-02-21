@@ -5,9 +5,9 @@ import (
 )
 
 var (
-	buildDate string
+	buildCommit string
 )
 
 func main() {
-	fmt.Printf("Drone Chef Supermarket Plugin built at %s\n", buildDate)
+	fmt.Printf("Drone Chef Supermarket Plugin built from %s\n", buildCommit)
 }
