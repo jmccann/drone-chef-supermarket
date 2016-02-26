@@ -4,7 +4,7 @@
 [![Coverage Status](https://aircover.co/badges/drone-plugins/drone-chef-supermarket/coverage.svg)](https://aircover.co/drone-plugins/drone-chef-supermarket)
 [![](https://badge.imagelayers.io/plugins/drone-chef-supermarket:latest.svg)](https://imagelayers.io/?images=plugins/drone-chef-supermarket:latest 'Get your own badge on imagelayers.io')
 
-Drone plugin to publish files and artifacts to Chef Supermarket
+Drone plugin to publish files and artifacts to Chef Supermarket. For the usage information and a listing of the available options please take a look at [the docs](DOCS.md).
 
 ## Binary
 
