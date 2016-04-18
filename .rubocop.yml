@@ -1,0 +1,13 @@
+AllCops:
+  Exclude:
+    - gems/**/*
+    - test/chef_cookbook/**/*
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/StringLiteralsInInterpolation:
+  EnforcedStyle: double_quotes
+
+Style/AlignParameters:
+  EnforcedStyle: with_fixed_indentation

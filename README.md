@@ -4,20 +4,20 @@
 [![Coverage Status](https://aircover.co/badges/drone-plugins/drone-chef-supermarket/coverage.svg)](https://aircover.co/drone-plugins/drone-chef-supermarket)
 [![](https://badge.imagelayers.io/plugins/drone-chef-supermarket:latest.svg)](https://imagelayers.io/?images=plugins/drone-chef-supermarket:latest 'Get your own badge on imagelayers.io')
 
-Drone plugin to publish files and artifacts to Chef Supermarket. For the usage information and a listing of the available options please take a look at [the docs](DOCS.md).
+Drone plugin to publish cookbooks to Supermarket (internal or public). For the usage information and a listing of the available options please take a look at [the docs](DOCS.md).
 
-## Binary
+## Execute
 
-Build the binary using `make`:
+Install the deps using `rake`:
 
 ```
-make deps build
+bundle install --path=gems --retry=5 --jobs=5
 ```
 
 ### Example
 
 ```sh
-./drone-chef-supermarket <<EOF
+bundle exec bin/drone-chef-supermarket <<EOF
 {
     "repo": {
         "clone_url": "git://github.com/drone/drone",
@@ -35,7 +35,7 @@ make deps build
         "finished_at": 1421029813,
         "message": "Update the Readme",
         "author": "johnsmith",
-        "author_email": "john.smith@gmail.com"
+        "author_email": "john.smith@gmail.com",
         "event": "push",
         "branch": "master",
         "commit": "436b7a6e2abaddfd35740527353e78a227ddcb2c",
@@ -46,6 +46,10 @@ make deps build
         "path": "/drone/src/github.com/drone/drone"
     },
     "vargs": {
+        "user": "octocat",
+        "private_key": "-----BEGIN RSA PRIVATE KEY-----\nMIIasdf...\n-----END RSA PRIVATE KEY-----",
+        "server": "https://chefserver.com",
+        "ssl_verify": false
     }
 }
 EOF
@@ -53,16 +57,17 @@ EOF
 
 ## Docker
 
-Build the container using `make`:
+Build the container using `rake`:
 
 ```
-make deps docker
+bundle install --path=gems --retry=5 --jobs=5
+bin/rake build docker
 ```
 
 ### Example
 
 ```sh
-docker run -i plugins/drone-chef-supermarket <<EOF
+docker run -i plugins/drone-chef-supermarket:latest <<EOF
 {
     "repo": {
         "clone_url": "git://github.com/drone/drone",
@@ -80,7 +85,7 @@ docker run -i plugins/drone-chef-supermarket <<EOF
         "finished_at": 1421029813,
         "message": "Update the Readme",
         "author": "johnsmith",
-        "author_email": "john.smith@gmail.com"
+        "author_email": "john.smith@gmail.com",
         "event": "push",
         "branch": "master",
         "commit": "436b7a6e2abaddfd35740527353e78a227ddcb2c",
@@ -91,6 +96,10 @@ docker run -i plugins/drone-chef-supermarket <<EOF
         "path": "/drone/src/github.com/drone/drone"
     },
     "vargs": {
+        "user": "octocat",
+        "private_key": "-----BEGIN RSA PRIVATE KEY-----\nMIIasdf...\n-----END RSA PRIVATE KEY-----",
+        "server": "https://chefserver.com",
+        "ssl_verify": false
     }
 }
 EOF
