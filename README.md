@@ -48,7 +48,7 @@ bundle exec bin/drone-chef-supermarket <<EOF
     "vargs": {
         "user": "octocat",
         "private_key": "-----BEGIN RSA PRIVATE KEY-----\nMIIasdf...\n-----END RSA PRIVATE KEY-----",
-        "server": "https://chefserver.com",
+        "server": "https://mysupermarket.com",
         "ssl_verify": false
     }
 }
@@ -98,7 +98,7 @@ docker run -i plugins/drone-chef-supermarket:latest <<EOF
     "vargs": {
         "user": "octocat",
         "private_key": "-----BEGIN RSA PRIVATE KEY-----\nMIIasdf...\n-----END RSA PRIVATE KEY-----",
-        "server": "https://chefserver.com",
+        "server": "https://mysupermarket.com",
         "ssl_verify": false
     }
 }

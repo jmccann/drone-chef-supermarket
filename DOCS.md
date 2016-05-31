@@ -13,8 +13,7 @@ Example
 This will upload the cookbook to a supermarket server
 ```yaml
 deploy:
-  chef:
-    image: chef-supermarket
+  chef_supermarket:
     user: userid
     private_key: "-----BEGIN RSA PRIVATE KEY-----\nMIIasdf...\n-----END RSA PRIVATE KEY-----"
     server: https://mysupermarket.com
