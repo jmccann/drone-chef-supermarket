@@ -1,33 +1,19 @@
-build:
-  image: ruby:2.3-alpine
-  commands:
-    - apk update
-    - apk add build-base
+pipeline:
+  test:
+    image: ruby:2.3-alpine
+    commands:
+      - apk update
+      - apk add build-base
 
-    - bundle install --path=gems --retry=5 --jobs=5
-    - bin/rake
-
-publish:
-  coverage:
-    include: coverage/lcov/drone-chef-supermarket.lcov
-    when:
-      branch: master
+      - bundle install --path=gems --retry=5 --jobs=5
+      - bin/rake
   docker:
-    username: $$DOCKER_USER
-    password: $$DOCKER_PASS
-    email: $$DOCKER_EMAIL
+    storage_driver: overlay
     repo: plugins/drone-chef-supermarket
-    tag: latest
+    tag: [ "latest" ]
     when:
-      branch: master
-  docker:
-    username: $$DOCKER_USER
-    password: $$DOCKER_PASS
-    email: $$DOCKER_EMAIL
-    repo: plugins/drone-chef-supermarket
-    tag: develop
-    when:
-      branch: develop
+      branch: release/0.4
+      event: push
 
 plugin:
   name: Chef Supermarket
