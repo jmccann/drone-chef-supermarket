@@ -1,15 +1,12 @@
 build:
-  image: golang:1.5
-  environment:
-    - CGO_ENABLED=0
+  image: ruby:2.3-alpine
   commands:
-    - make deps
-    - make vet
-    - make build
-    - make test
+    - bundle install --path=gems --retry=5 --jobs=5
+    - bin/rake
 
 publish:
   coverage:
+    include: coverage/lcov/drone-chef-supermarket.lcov
     when:
       branch: master
   docker:
@@ -36,3 +33,4 @@ plugin:
   image: plugins/drone-chef-supermarket
   labels:
     - chef
+    - ruby
