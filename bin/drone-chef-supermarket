@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require "gli"
+
 $LOAD_PATH.push File.expand_path("../../lib", __FILE__)
 
 Signal.trap("INT") do
@@ -15,14 +17,20 @@ rescue LoadError
   require "drone/supermarket"
 end
 
-ARGV.delete "--"
+include GLI::App
 
-begin
-  Drone::Plugin.new(ARGV.first) do |payload|
-    Drone::Supermarket.new(
-      payload
-    ).execute!
+program_desc "Drone Supermarket Plugin"
+
+command :upload do |c|
+  c.action do |_global_options, options, _args|
+    c.flag [:u, :user], required: true
+    c.flag [:k, :private_key], required: true, mask: true
+    c.flag [:s, :server], default_value: "https://supermarket.chef.io"
+    c.flag [:v, :ssl_verify], default_value: true
+    c.flag [:d, :debug], default_value: ENV["DRONE_DEBUG"]
+
+    Drone::Supermarket.new(options).execute!
   end
-rescue Interrupt
-  abort "Quitting..."
 end
+
+exit run(ARGV)
