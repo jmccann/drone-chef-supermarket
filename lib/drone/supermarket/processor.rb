@@ -24,10 +24,10 @@ module Drone
       # Validate that all requirements are met
       #
       def validate!
-        unless File.exist? "#{@config.workspace.path}/metadata.rb"
+        unless File.exist? "#{Dir.pwd}/metadata.rb"
           raise "Missing cookbook metadata.rb"
         end
-        unless File.exist? "#{@config.workspace.path}/README.md"
+        unless File.exist? "#{Dir.pwd}/README.md"
           raise "Missing cookbook README.md"
         end
       end
@@ -49,7 +49,7 @@ module Drone
 
         if uploaded?
           log.info "Cookbook #{cookbook_version} " \
-                   "already uploaded to #{@config.server}" if uploaded?
+                   "already uploaded to #{@config.payload["server"]}" if uploaded?
           return
         end
 
@@ -60,11 +60,11 @@ module Drone
 
       def write_knife_rb # rubocop:disable AbcSize
         config.knife_config_path.open "w" do |f|
-          f.puts "node_name '#{@config.user}'"
+          f.puts "node_name '#{@config.payload["user"]}'"
           f.puts "client_key '#{@config.keyfile_path}'"
-          f.puts "cookbook_path '#{Pathname.new(@config.workspace.path).parent}'" # rubocop:disable LineLength
+          f.puts "cookbook_path '#{Pathname.new(Dir.pwd).parent}'" # rubocop:disable LineLength
           f.puts "ssl_verify_mode #{@config.ssl_mode}"
-          f.puts "knife[:supermarket_site] = '#{@config.server}'"
+          f.puts "knife[:supermarket_site] = '#{@config.payload["server"]}'"
         end
       end
 
@@ -86,12 +86,12 @@ module Drone
         end
 
         raise "Failed to upload cookbook" if cmd.error?
-        log.info "Finished uploading #{cookbook_version} to #{@config.server}"
+        log.info "Finished uploading #{cookbook_version} to #{@config.payload["server"]}"
       end
 
       def check_upload_status
         log.info "Checking if #{cookbook_version} " \
-                 "is already shared to #{@config.server}"
+                 "is already shared to #{@config.payload["server"]}"
         knife_show
       end
 

@@ -1,32 +1,15 @@
 require "spec_helper"
-require "drone"
 
 describe Drone::Supermarket::Processor do
   include FakeFS::SpecHelpers
 
-  let(:build_data) do
+  let(:options) do
     {
-      "workspace" => {
-        "path" => "/path/to/project",
-        "netrc" => {
-          "machine" => "the_machine",
-          "login" => "johndoe",
-          "password" => "test123"
-        }
-      },
-      "vargs" => {
-        "server" => "https://myserver.com",
-        "user" => "johndoe",
-        "private_key" => "PEMDATAHERE",
-        "ssl_verify" => false
-      }
+      "server" => "https://myserver.com",
+      "user" => "jane",
+      "private_key" => "PEMDATAHERE",
+      "ssl_verify" => false
     }
-  end
-
-  let(:payload) do
-    p = Drone::Plugin.new build_data.to_json
-    p.parse
-    p.result
   end
 
   let(:stringio) do
@@ -38,7 +21,7 @@ describe Drone::Supermarket::Processor do
   end
 
   let(:config) do
-    Drone::Supermarket::Config.new payload, logger
+    Drone::Supermarket::Config.new options, logger
   end
 
   let(:processor) do
@@ -84,6 +67,10 @@ describe Drone::Supermarket::Processor do
   end
 
   describe '#validate!' do
+    before do
+      allow(Dir).to receive(:pwd).and_return "/path/to/project"
+    end
+
     it "passes when org is provided" do
       expect { processor.validate! }.not_to raise_error
     end
@@ -117,6 +104,7 @@ describe Drone::Supermarket::Processor do
     context "writes the knife config" do
       before do
         allow(Dir).to receive(:home).and_return "/root"
+        allow(Dir).to receive(:pwd).and_return "/path/to/project"
       end
 
       it "includes the username" do
@@ -124,7 +112,7 @@ describe Drone::Supermarket::Processor do
           processor.configure!
 
           expect(File.read("/root/.chef/knife.rb"))
-            .to include "node_name 'johndoe'"
+            .to include "node_name 'jane'"
         end
       end
 
