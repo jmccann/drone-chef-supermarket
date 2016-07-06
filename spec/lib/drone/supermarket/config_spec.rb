@@ -22,28 +22,6 @@ describe Drone::Supermarket::Config do
     allow(Dir).to receive(:home).and_return "/root"
   end
 
-  # describe '#validate!' do
-  #   it "fails if no vargs are provided" do
-  #     # build_data.delete "vargs"
-  #     options = {}
-  #     expect { config.validate! }.to raise_error "No plugin data found"
-  #   end
-  #
-  #   it "fails if no user provided" do
-  #     options.delete "user"
-  #     expect { config.validate! }.to raise_error "Please provide a username"
-  #   end
-  #
-  #   it "fails if no private_key is provided" do
-  #     options.delete "private_key"
-  #     expect { config.validate! }.to raise_error "Please provide a private key"
-  #   end
-  #
-  #   it "does not throw an error if validation passes" do
-  #     expect { config.validate! }.not_to raise_error
-  #   end
-  # end
-
   describe '#configure!' do
     # it "writes .netrc file" do
     #   allow(config).to receive(:write_keyfile)
