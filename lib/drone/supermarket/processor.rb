@@ -30,6 +30,9 @@ module Drone
         unless File.exist? "#{Dir.pwd}/README.md"
           raise "Missing cookbook README.md"
         end
+        unless File.exist? "#{Dir.pwd}/metadata.rb"
+          raise "Missing metadata.rb, is this a cookbook?"
+        end
       end
 
       #
@@ -49,7 +52,8 @@ module Drone
 
         if uploaded?
           log.info "Cookbook #{cookbook_version} " \
-                   "already uploaded to #{@config.payload["server"]}" if uploaded?
+                   "already uploaded to " \
+                   "#{@config.payload[:server]}" if uploaded?
           return
         end
 
@@ -58,13 +62,10 @@ module Drone
 
       protected
 
-      def write_knife_rb # rubocop:disable AbcSize
+      def write_knife_rb
         config.knife_config_path.open "w" do |f|
-          f.puts "node_name '#{@config.payload["user"]}'"
-          f.puts "client_key '#{@config.keyfile_path}'"
-          f.puts "cookbook_path '#{Pathname.new(Dir.pwd).parent}'" # rubocop:disable LineLength
           f.puts "ssl_verify_mode #{@config.ssl_mode}"
-          f.puts "knife[:supermarket_site] = '#{@config.payload["server"]}'"
+          f.puts "knife[:supermarket_site] = '#{@config.payload[:server]}'"
         end
       end
 
@@ -74,24 +75,23 @@ module Drone
       def knife_upload # rubocop:disable AbcSize, MethodLength
         command = ["knife supermarket share #{cookbook.name}"]
         command << "-c #{@config.knife_config_path}"
+        command << "-o #{Pathname.new(Dir.pwd).parent}"
+        command.concat knife_opts
         cmd = Mixlib::ShellOut.new(command.join(" "))
         cmd.run_command
 
-        if cmd.error?
-          log.error "knife supermarket share stdout: #{cmd.stdout}"
-          log.error "knife supermarket share stderr: #{cmd.stderr}"
-        else
-          log.debug "knife supermarket share stdout: #{cmd.stdout}"
-          log.debug "knife supermarket share stderr: #{cmd.stderr}"
-        end
+        log.debug "knife supermarket share stdout: #{cmd.stdout}"
+        log.error cmd.stdout + cmd.stderr if cmd.error?
 
         raise "Failed to upload cookbook" if cmd.error?
-        log.info "Finished uploading #{cookbook_version} to #{@config.payload["server"]}"
+
+        log.info "Finished uploading #{cookbook_version} to " \
+                 "#{@config.payload[:server]}"
       end
 
       def check_upload_status
         log.info "Checking if #{cookbook_version} " \
-                 "is already shared to #{@config.payload["server"]}"
+                 "is already shared to #{@config.payload[:server]}"
         knife_show
       end
 
@@ -99,19 +99,28 @@ module Drone
         @uploaded ||= knife_show
       end
 
-      def knife_show
+      def knife_show # rubocop:disable AbcSize
         command = ["knife supermarket show #{cookbook.name} #{cookbook.version}"] # rubocop:disable LineLength
+        command.concat knife_opts
         command << "-c #{@config.knife_config_path}"
         cmd = Mixlib::ShellOut.new(command.join(" "))
         cmd.run_command
+
         log.debug "knife supermarket share stdout:\n#{cmd.stdout}"
         @uploaded = !cmd.error?
+      end
+
+      def knife_opts
+        opts = []
+        opts << "-m #{@config.payload[:server]}"
+        opts << "-u #{@config.payload[:user]}"
+        opts << "-k #{@config.keyfile_path}"
       end
 
       def cookbook
         @metadata ||= begin
           metadata = ::Chef::Cookbook::Metadata.new
-          metadata.from_file("#{@config.workspace.path}/metadata.rb")
+          metadata.from_file("#{Dir.pwd}/metadata.rb")
           metadata
         end
       end

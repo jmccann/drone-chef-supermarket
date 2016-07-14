@@ -5,10 +5,10 @@ describe Drone::Supermarket::Config do
 
   let(:options) do
     {
-      "server" => "https://myserver.com",
-      "user" => "jane",
-      "private_key" => "PEMDATAHERE",
-      "ssl_verify" => false
+      server: "https://myserver.com",
+      user: "jane",
+      private_key: "PEMDATAHERE",
+      ssl_verify: "false"
     }
   end
 
@@ -22,28 +22,7 @@ describe Drone::Supermarket::Config do
     allow(Dir).to receive(:home).and_return "/root"
   end
 
-  describe '#configure!' do
-    # it "writes .netrc file" do
-    #   allow(config).to receive(:write_keyfile)
-    #
-    #   expect(File).to receive(:open).with("/root/.netrc", "w").and_yield(file)
-    #   expect(file).to receive(:puts).with("machine the_machine")
-    #   expect(file).to receive(:puts).with("  login johndoe")
-    #   expect(file).to receive(:puts).with("  password test123")
-    #
-    #   config.configure!
-    # end
-
-    # it "does not write .netrc file on local build" do
-    #   build_data["workspace"].delete "netrc"
-    #
-    #   allow(config).to receive(:write_keyfile)
-    #
-    #   expect(File).not_to receive(:open).with("/root/.netrc", "w")
-    #
-    #   config.configure!
-    # end
-
+  describe "#configure!" do
     it "writes key file" do
       allow(config).to receive(:write_netrc)
 
@@ -54,19 +33,19 @@ describe Drone::Supermarket::Config do
     end
   end
 
-  describe '#ssl_mode' do
+  describe "#ssl_mode" do
     it "returns value to disable ssl verify in knife" do
-      options["ssl_verify"] = false
+      options[:ssl_verify] = "false"
       expect(config.ssl_mode).to eq ":verify_none"
     end
 
     it "returns value to enable ssl verify in knife" do
-      options["ssl_verify"] = true
+      options[:ssl_verify] = "true"
       expect(config.ssl_mode).to eq ":verify_peer"
     end
   end
 
-  describe '#knife_config_path' do
+  describe "#knife_config_path" do
     it "returns the file path" do
       FakeFS do
         expect(config.knife_config_path.to_s).to eq "/root/.chef/knife.rb"

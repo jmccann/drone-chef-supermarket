@@ -9,25 +9,52 @@ Signal.trap("INT") do
 end
 
 begin
-  require "drone"
   require "drone/supermarket"
 rescue LoadError
   require "rubygems"
-  require "drone"
   require "drone/supermarket"
 end
 
 include GLI::App
 
+def load_env(options, key)
+  if options[key.downcase.to_sym].nil? && !ENV["PLUGIN_#{key.upcase}"].nil?
+    options[key.downcase.to_sym] = ENV["PLUGIN_#{key.upcase}"]
+    options[key] = ENV["PLUGIN_#{key.upcase}"]
+  end
+end
+
+def load_secrets(options, key)
+  if options[key.downcase.to_sym].nil? &&
+     !ENV["SUPERMARKET_#{key.upcase}"].nil?
+    options[key.downcase.to_sym] = ENV["SUPERMARKET_#{key.upcase}"]
+    options[key] = ENV["SUPERMARKET_#{key.upcase}"]
+  end
+end
+
 program_desc "Drone Supermarket Plugin"
 
 command :upload do |c|
+  c.flag [:u, :user]
+  c.flag [:k, :private_key], mask: true
+  c.flag [:s, :server]
+  c.flag [:v, :ssl_verify]
+  c.flag [:d, :debug]
+
   c.action do |_global_options, options, _args|
-    c.flag [:u, :user], required: true
-    c.flag [:k, :private_key], required: true, mask: true
-    c.flag [:s, :server], default_value: "https://supermarket.chef.io"
-    c.flag [:v, :ssl_verify], default_value: true
-    c.flag [:d, :debug], default_value: ENV["DRONE_DEBUG"]
+    %w(user server ssl_verify debug).each do |k|
+      load_env options, k
+    end
+    %w(private_key).each do |k|
+      load_secrets options, k
+    end
+
+    options[:server] = "https://supermarket.chef.io" if options[:server].nil?
+    options["server"] = options[:server]
+    options[:ssl_verify] = true if options[:ssl_verify].nil?
+    options["ssl_verify"] = options[:ssl_verify]
+    options[:debug] = false if options[:debug].nil?
+    options["debug"] = options[:debug]
 
     Drone::Supermarket.new(options).execute!
   end

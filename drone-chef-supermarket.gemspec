@@ -41,9 +41,8 @@ Gem::Specification.new do |s|
   # Keep the versions in sync with the Dockerfile
   s.add_runtime_dependency "gli", "~> 2.14"
   s.add_runtime_dependency "mixlib-shellout", "~> 2.2"
-  s.add_runtime_dependency "chef", "~> 12.7"
+  s.add_runtime_dependency "chef", "12.10.24"
   s.add_runtime_dependency "knife-supermarket", "~> 0.2"
 
-  # Needed until coercible has proper dependencies defined
-  s.add_runtime_dependency "bigdecimal", "~> 1.2"
+  s.add_runtime_dependency "json", "~> 2.0" # Required by Chef
 end

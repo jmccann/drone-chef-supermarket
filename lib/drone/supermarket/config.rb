@@ -7,7 +7,6 @@ module Drone
     # Chef plugin configuration
     #
     class Config
-
       attr_accessor :payload, :logger
 
       #
@@ -31,7 +30,7 @@ module Drone
       # @return [String]
       #
       def ssl_mode
-        payload["ssl_verify"] ? ":verify_peer" : ":verify_none"
+        to_boolean(payload[:ssl_verify]) ? ":verify_peer" : ":verify_none"
       end
 
       #
@@ -65,7 +64,7 @@ module Drone
 
       def default_logger
         @logger ||= Logger.new(STDOUT).tap do |l|
-          l.level = payload["debug"] ? Logger::DEBUG : Logger::INFO
+          l.level = payload[:debug] ? Logger::DEBUG : Logger::INFO
           l.formatter = proc do |sev, datetime, _progname, msg|
             "#{sev}, [#{datetime}] : #{msg}\n"
           end
@@ -77,8 +76,12 @@ module Drone
       #
       def write_keyfile
         keyfile_path.open "w" do |f|
-          f.write payload["private_key"]
+          f.write payload[:private_key]
         end
+      end
+
+      def to_boolean(str)
+        str.downcase == "true" # rubocop:disable Casecmp
       end
 
       # #
