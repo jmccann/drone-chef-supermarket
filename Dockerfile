@@ -17,14 +17,14 @@ RUN apk update && \
     mixlib-shellout \
     --version '~> 2.2' && \
   gem install --no-ri --no-rdoc \
+    json \
+    --version '~> 2.0' && \
+  gem install --no-ri --no-rdoc \
     chef \
-    --version '~> 12.7' && \
+    --version '12.10.24' && \
   gem install --no-ri --no-rdoc \
     knife-supermarket \
     --version '~> 0.2' && \
-  gem install --no-ri --no-rdoc \
-    bigdecimal \
-    --version '~> 1.2' && \
   apk del \
     bash \
     libffi-dev \

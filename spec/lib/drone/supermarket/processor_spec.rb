@@ -5,10 +5,10 @@ describe Drone::Supermarket::Processor do
 
   let(:options) do
     {
-      "server" => "https://myserver.com",
-      "user" => "jane",
-      "private_key" => "PEMDATAHERE",
-      "ssl_verify" => false
+      server: "https://myserver.com",
+      user: "jane",
+      private_key: "PEMDATAHERE",
+      ssl_verify: "false"
     }
   end
 
@@ -66,7 +66,7 @@ describe Drone::Supermarket::Processor do
       .and_return knife_share_shellout
   end
 
-  describe '#validate!' do
+  describe "#validate!" do
     before do
       allow(Dir).to receive(:pwd).and_return "/path/to/project"
     end
@@ -90,7 +90,7 @@ describe Drone::Supermarket::Processor do
     end
   end
 
-  describe '#configure!' do
+  describe "#configure!" do
     before do
       allow(config).to receive(:configure!)
     end
@@ -105,33 +105,6 @@ describe Drone::Supermarket::Processor do
       before do
         allow(Dir).to receive(:home).and_return "/root"
         allow(Dir).to receive(:pwd).and_return "/path/to/project"
-      end
-
-      it "includes the username" do
-        FakeFS do
-          processor.configure!
-
-          expect(File.read("/root/.chef/knife.rb"))
-            .to include "node_name 'jane'"
-        end
-      end
-
-      it "includes the key file path" do
-        FakeFS do
-          processor.configure!
-
-          expect(File.read("/root/.chef/knife.rb"))
-            .to include "client_key '/tmp/key.pem'"
-        end
-      end
-
-      it "includes the cookbook_path" do
-        FakeFS do
-          processor.configure!
-
-          expect(File.read("/root/.chef/knife.rb"))
-            .to include "cookbook_path '/path/to'"
-        end
       end
 
       it "includes ssl_verify_mode" do
@@ -154,7 +127,7 @@ describe Drone::Supermarket::Processor do
     end
   end
 
-  describe '#upload!' do
+  describe "#upload!" do
     it "checks if cookbook is already uploaded" do
       expect(knife_show_shellout).to receive(:run_command)
       processor.upload!
