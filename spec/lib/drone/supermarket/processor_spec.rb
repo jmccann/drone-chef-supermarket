@@ -1,8 +1,6 @@
 require "spec_helper"
 
 describe Drone::Supermarket::Processor do
-  include FakeFS::SpecHelpers
-
   let(:options) do
     {
       server: "https://myserver.com",
@@ -51,11 +49,6 @@ describe Drone::Supermarket::Processor do
   before do
     allow(Mixlib::ShellOut).to receive(:new).and_return nil
 
-    allow(File).to receive(:exist?).and_call_original
-    allow(File).to receive(:exist?)
-      .with("/path/to/project/metadata.rb").and_return(true)
-    allow(File).to receive(:exist?)
-      .with("/path/to/project/README.md").and_return(true)
     allow(processor).to receive(:cookbook).and_return(cookbook)
 
     allow(Mixlib::ShellOut)
@@ -67,26 +60,40 @@ describe Drone::Supermarket::Processor do
   end
 
   describe "#validate!" do
+    include FakeFS::SpecHelpers
+
     before do
       allow(Dir).to receive(:pwd).and_return "/path/to/project"
     end
 
     it "passes when org is provided" do
-      expect { processor.validate! }.not_to raise_error
+      FakeFS do
+        FileUtils.mkdir_p "/path/to/project"
+        FileUtils.touch "/path/to/project/metadata.rb"
+        FileUtils.touch "/path/to/project/README.md"
+
+        expect { processor.validate! }.not_to raise_error
+      end
     end
 
     it "fails if metadata.rb is missing" do
-      expect(File).to receive(:exist?)
-        .with("/path/to/project/metadata.rb").and_return false
-      expect { processor.validate! }
-        .to raise_error("Missing cookbook metadata.rb")
+      FakeFS do
+        FileUtils.mkdir_p "/path/to/project"
+        FileUtils.touch "/path/to/project/README.md"
+
+        expect { processor.validate! }
+          .to raise_error("Missing cookbook metadata.rb, is this a cookbook?")
+      end
     end
 
     it "fails if README.md is missing" do
-      expect(File).to receive(:exist?)
-        .with("/path/to/project/README.md").and_return false
-      expect { processor.validate! }
-        .to raise_error("Missing cookbook README.md")
+      FakeFS do
+        FileUtils.mkdir_p "/path/to/project"
+        FileUtils.touch "/path/to/project/metadata.rb"
+
+        expect { processor.validate! }
+          .to raise_error("Missing cookbook README.md")
+      end
     end
   end
 
@@ -102,6 +109,8 @@ describe Drone::Supermarket::Processor do
     end
 
     context "writes the knife config" do
+      include FakeFS::SpecHelpers
+
       before do
         allow(Dir).to receive(:home).and_return "/root"
         allow(Dir).to receive(:pwd).and_return "/path/to/project"

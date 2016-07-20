@@ -60,6 +60,13 @@ module Drone
         )
       end
 
+      #
+      # The path to write our knife keyfile to
+      #
+      def workspace_path
+        @keyfile_path ||= Pathname.new Dir.pwd
+      end
+
       protected
 
       def default_logger
