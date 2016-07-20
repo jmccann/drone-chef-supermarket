@@ -6,7 +6,7 @@ describe Drone::Supermarket::Processor do
       server: "https://myserver.com",
       user: "jane",
       private_key: "PEMDATAHERE",
-      ssl_verify: "false"
+      ssl_verify: false
     }
   end
 

@@ -36,7 +36,7 @@ command :upload do |c|
   c.flag [:u, :user]
   c.flag [:k, :private_key], mask: true
   c.flag [:s, :server]
-  c.flag [:v, :ssl_verify]
+  c.switch [:v, :ssl_verify]
   c.flag [:d, :debug]
 
   c.action do |_global_options, options, _args|
