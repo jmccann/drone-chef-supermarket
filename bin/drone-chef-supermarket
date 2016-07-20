@@ -40,11 +40,11 @@ command :upload do |c|
   c.flag [:d, :debug]
 
   c.action do |_global_options, options, _args|
-    %w(user server ssl_verify debug).each do |k|
-      load_env options, k
-    end
     %w(private_key).each do |k|
       load_secrets options, k
+    end
+    %w(user server ssl_verify debug private_key).each do |k|
+      load_env options, k
     end
 
     options[:server] = "https://supermarket.chef.io" if options[:server].nil?
