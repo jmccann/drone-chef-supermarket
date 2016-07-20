@@ -8,7 +8,7 @@ describe Drone::Supermarket::Config do
       server: "https://myserver.com",
       user: "jane",
       private_key: "PEMDATAHERE",
-      ssl_verify: "false"
+      ssl_verify: false
     }
   end
 
@@ -35,12 +35,12 @@ describe Drone::Supermarket::Config do
 
   describe "#ssl_mode" do
     it "returns value to disable ssl verify in knife" do
-      options[:ssl_verify] = "false"
+      options[:ssl_verify] = false
       expect(config.ssl_mode).to eq ":verify_none"
     end
 
     it "returns value to enable ssl verify in knife" do
-      options[:ssl_verify] = "true"
+      options[:ssl_verify] = true
       expect(config.ssl_mode).to eq ":verify_peer"
     end
   end

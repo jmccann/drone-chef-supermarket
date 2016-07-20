@@ -30,7 +30,7 @@ module Drone
       # @return [String]
       #
       def ssl_mode
-        to_boolean(payload[:ssl_verify]) ? ":verify_peer" : ":verify_none"
+        payload[:ssl_verify] ? ":verify_peer" : ":verify_none"
       end
 
       #
@@ -85,10 +85,6 @@ module Drone
         keyfile_path.open "w" do |f|
           f.write payload[:private_key]
         end
-      end
-
-      def to_boolean(str)
-        str.downcase == "true" # rubocop:disable Casecmp
       end
 
       # #
