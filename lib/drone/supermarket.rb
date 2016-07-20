@@ -24,8 +24,6 @@ module Drone
     # General plugin execution
     #
     def execute!
-      config.validate!
-
       Processor.new config do |processor|
         processor.validate!
         processor.configure!

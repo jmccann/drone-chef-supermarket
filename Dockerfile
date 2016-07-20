@@ -11,20 +11,20 @@ RUN apk update && \
     libffi-dev \
     bash && \
   gem install --no-ri --no-rdoc \
-    droneio \
-    --version '~> 1.0' && \
+    gli \
+    --version '~> 2.14' && \
   gem install --no-ri --no-rdoc \
     mixlib-shellout \
     --version '~> 2.2' && \
   gem install --no-ri --no-rdoc \
+    json \
+    --version '~> 2.0' && \
+  gem install --no-ri --no-rdoc \
     chef \
-    --version '~> 12.7' && \
+    --version '12.10.24' && \
   gem install --no-ri --no-rdoc \
     knife-supermarket \
     --version '~> 0.2' && \
-  gem install --no-ri --no-rdoc \
-    bigdecimal \
-    --version '~> 1.2' && \
   apk del \
     bash \
     libffi-dev \
@@ -36,4 +36,4 @@ COPY pkg/drone-chef-supermarket-0.0.0.gem /tmp/
 RUN gem install --no-ri --no-rdoc --local \
   /tmp/drone-chef-supermarket-0.0.0.gem
 
-ENTRYPOINT ["/usr/bin/drone-chef-supermarket"]
+ENTRYPOINT ["/usr/bin/drone-chef-supermarket", "upload"]
