@@ -32,12 +32,19 @@ end
 
 program_desc "Drone Supermarket Plugin"
 
+desc "Upload cookbook"
+
 command :upload do |c|
+  c.desc "The user to upload cookbook with"
   c.flag [:u, :user]
+  c.desc "The user's private key"
   c.flag [:k, :private_key], mask: true
+  c.desc "The Supermarket server to upload cookbook to"
   c.flag [:s, :server]
+  c.desc "To SSL or not to SSL"
   c.switch [:v, :ssl_verify]
-  c.flag [:d, :debug]
+  c.desc "Debug log output"
+  c.switch [:d, :debug]
 
   c.action do |_global_options, options, _args|
     %w(private_key).each do |k|
