@@ -117,7 +117,7 @@ module Drone
       def cookbook
         @metadata ||= begin
           metadata = ::Chef::Cookbook::Metadata.new
-          metadata.from_file(config.workspace_path("metadata.rb"))
+          metadata.from_file(config.workspace_path.join("metadata.rb"))
           metadata
         end
       end
