@@ -20,7 +20,6 @@ include GLI::App
 def load_env(options, key)
   if options[key.downcase.to_sym].nil? && !ENV["PLUGIN_#{key.upcase}"].nil?
     options[key.downcase.to_sym] = ENV["PLUGIN_#{key.upcase}"]
-    options[key] = ENV["PLUGIN_#{key.upcase}"]
   end
 end
 
@@ -28,7 +27,6 @@ def load_secrets(options, key)
   if options[key.downcase.to_sym].nil? &&
      !ENV["SUPERMARKET_#{key.upcase}"].nil?
     options[key.downcase.to_sym] = ENV["SUPERMARKET_#{key.upcase}"]
-    options[key] = ENV["SUPERMARKET_#{key.upcase}"]
   end
 end
 
@@ -50,11 +48,8 @@ command :upload do |c|
     end
 
     options[:server] = "https://supermarket.chef.io" if options[:server].nil?
-    options["server"] = options[:server]
     options[:ssl_verify] = true if options[:ssl_verify].nil?
-    options["ssl_verify"] = options[:ssl_verify]
     options[:debug] = false if options[:debug].nil?
-    options["debug"] = options[:debug]
 
     Drone::Supermarket.new(options).execute!
   end
