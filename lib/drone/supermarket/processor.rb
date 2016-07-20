@@ -24,14 +24,11 @@ module Drone
       # Validate that all requirements are met
       #
       def validate!
-        unless File.exist? "#{Dir.pwd}/metadata.rb"
-          raise "Missing cookbook metadata.rb"
+        unless config.workspace_path.join("metadata.rb").exist?
+          raise "Missing cookbook metadata.rb, is this a cookbook?"
         end
-        unless File.exist? "#{Dir.pwd}/README.md"
+        unless config.workspace_path.join("README.md").exist?
           raise "Missing cookbook README.md"
-        end
-        unless File.exist? "#{Dir.pwd}/metadata.rb"
-          raise "Missing metadata.rb, is this a cookbook?"
         end
       end
 
@@ -75,7 +72,7 @@ module Drone
       def knife_upload # rubocop:disable AbcSize, MethodLength
         command = ["knife supermarket share #{cookbook.name}"]
         command << "-c #{@config.knife_config_path}"
-        command << "-o #{Pathname.new(Dir.pwd).parent}"
+        command << "-o #{config.workspace_path.parent}"
         command.concat knife_opts
         cmd = Mixlib::ShellOut.new(command.join(" "))
         cmd.run_command
@@ -120,7 +117,7 @@ module Drone
       def cookbook
         @metadata ||= begin
           metadata = ::Chef::Cookbook::Metadata.new
-          metadata.from_file("#{Dir.pwd}/metadata.rb")
+          metadata.from_file(config.workspace_path("metadata.rb"))
           metadata
         end
       end
