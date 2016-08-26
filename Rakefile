@@ -1,4 +1,4 @@
-IMAGE_NAME = "plugins/drone-chef-supermarket".freeze
+IMAGE_NAME = "jmccann/drone-chef-supermarket".freeze
 
 begin
   require "bundler"
