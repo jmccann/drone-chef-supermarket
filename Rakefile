@@ -1,4 +1,4 @@
-IMAGE_NAME = "jmccann/drone-chef-supermarket".freeze
+IMAGE_NAME = "jmccann/drone-chef-supermarket:0.5".freeze
 
 begin
   require "bundler"
@@ -24,6 +24,11 @@ YARD::Rake::YardocTask.new
 desc "Build docker container"
 task :docker do
   sh "docker build --rm=true -t #{IMAGE_NAME} ."
+end
+
+desc "Deploy docker container"
+task :deploy do
+  sh "docker push #{IMAGE_NAME}"
 end
 
 task default: [:build, :spec, :rubocop]
