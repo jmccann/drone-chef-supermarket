@@ -1,39 +1,39 @@
-build:
-  image: ruby:2.3-alpine
-  commands:
-    - apk update
-    - apk add build-base
+pipeline:
+  build:
+    image: ruby:2.3-alpine
+    commands:
+      - apk update
+      - apk add build-base
 
-    - bundle install --path=gems --retry=5 --jobs=5
-    - bin/rake
+      - bundle install --path=gems --retry=5 --jobs=5
+      - bin/rake
 
-publish:
-  coverage:
-    include: coverage/lcov/drone-chef-supermarket.lcov
-    when:
-      branch: master
-  docker:
-    username: $$DOCKER_USER
-    password: $$DOCKER_PASS
-    email: $$DOCKER_EMAIL
-    repo: plugins/drone-chef-supermarket
-    tag: latest
-    when:
-      branch: master
-  docker:
-    username: $$DOCKER_USER
-    password: $$DOCKER_PASS
-    email: $$DOCKER_EMAIL
-    repo: plugins/drone-chef-supermarket
-    tag: develop
-    when:
-      branch: develop
+  # coverage:
+  #   include: coverage/lcov/drone-chef-supermarket.lcov
+  #   when:
+  #     branch: master
+  # docker:
+  #   username: $$DOCKER_USER
+  #   password: $$DOCKER_PASS
+  #   email: $$DOCKER_EMAIL
+  #   repo: jmccann/drone-chef-supermarket
+  #   tag: latest
+  #   when:
+  #     branch: master
+  # docker:
+  #   username: $$DOCKER_USER
+  #   password: $$DOCKER_PASS
+  #   email: $$DOCKER_EMAIL
+  #   repo: jmccann/drone-chef-supermarket
+  #   tag: develop
+  #   when:
+  #     branch: develop
 
-plugin:
-  name: Chef Supermarket
-  desc: Publish files and artifacts to Chef Supermarket
-  type: publish
-  image: plugins/drone-chef-supermarket
-  labels:
-    - chef
-    - ruby
+# plugin:
+#   name: Chef Supermarket
+#   desc: Publish files and artifacts to Chef Supermarket
+#   type: publish
+#   image: plugins/drone-chef-supermarket
+#   labels:
+#     - chef
+#     - ruby
