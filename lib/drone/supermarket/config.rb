@@ -21,7 +21,7 @@ module Drone
       #
       # Validate that all requirements are met
       #
-      def validate! # rubocop:disable AbcSize, MethodLength
+      def validate! # rubocop:disable AbcSize
         raise "Missing 'user'" if payload[:user].nil? || payload[:user].empty?
         if payload[:private_key].nil? || payload[:private_key].empty?
           raise "Missing SUPERMARKET_PRIVATE_KEY"
