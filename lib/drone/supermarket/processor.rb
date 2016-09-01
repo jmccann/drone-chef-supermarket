@@ -71,14 +71,19 @@ module Drone
       #
       # Upload any roles, environments and data_bags
       #
-      def knife_upload # rubocop:disable AbcSize
+      def knife_upload # rubocop:disable AbcSize, MethodLength
         command = ["knife supermarket share #{cookbook.name}"]
         command << "-c #{@config.knife_config_path}"
         cmd = Mixlib::ShellOut.new(command.join(" "))
         cmd.run_command
 
-        log.debug "knife supermarket share stdout: #{cmd.stdout}"
-        log.debug "knife supermarket share stderr: #{cmd.stderr}"
+        if cmd.error?
+          log.error "knife supermarket share stdout: #{cmd.stdout}"
+          log.error "knife supermarket share stderr: #{cmd.stderr}"
+        else
+          log.debug "knife supermarket share stdout: #{cmd.stdout}"
+          log.debug "knife supermarket share stderr: #{cmd.stderr}"
+        end
 
         raise "Failed to upload cookbook" if cmd.error?
         log.info "Finished uploading #{cookbook_version} to #{@config.server}"
