@@ -25,6 +25,7 @@ module Drone
     #
     def execute!
       Processor.new config do |processor|
+        config.validate!
         processor.validate!
         processor.configure!
         processor.upload!

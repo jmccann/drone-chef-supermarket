@@ -1,5 +1,6 @@
 require "pathname"
 require "logger"
+require "openssl"
 
 module Drone
   class Supermarket
@@ -15,6 +16,20 @@ module Drone
       def initialize(payload, log = nil)
         self.payload = payload
         self.logger = log || default_logger
+      end
+
+      #
+      # Validate that all requirements are met
+      #
+      def validate! # rubocop:disable AbcSize, MethodLength
+        raise "Missing 'user'" if payload[:user].nil? || payload[:user].empty?
+        if payload[:private_key].nil? || payload[:private_key].empty?
+          raise "Missing SUPERMARKET_PRIVATE_KEY"
+        end
+        ::OpenSSL::PKey::RSA.new payload[:private_key]
+      rescue
+        raise "Failed to load SUPERMARKET_PRIVATE_KEY provided starting with:" \
+              "\n#{payload[:private_key][0, 35]}"
       end
 
       #
