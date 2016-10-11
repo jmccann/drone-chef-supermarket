@@ -23,7 +23,7 @@ module Drone
       #
       def validate!
         raise "Missing 'user'" if missing?(:user)
-        raise "Missing SUPERMARKET_PRIVATE_KEY" if missing(:private_key)
+        raise "Missing SUPERMARKET_PRIVATE_KEY" if missing?(:private_key)
 
         ::OpenSSL::PKey::RSA.new payload[:private_key]
       rescue OpenSSL::PKey::RSAError
