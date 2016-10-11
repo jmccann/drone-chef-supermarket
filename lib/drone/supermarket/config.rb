@@ -21,13 +21,12 @@ module Drone
       #
       # Validate that all requirements are met
       #
-      def validate! # rubocop:disable AbcSize
-        raise "Missing 'user'" if payload[:user].nil? || payload[:user].empty?
-        if payload[:private_key].nil? || payload[:private_key].empty?
-          raise "Missing SUPERMARKET_PRIVATE_KEY"
-        end
+      def validate!
+        raise "Missing 'user'" if missing?(:user)
+        raise "Missing SUPERMARKET_PRIVATE_KEY" if missing(:private_key)
+
         ::OpenSSL::PKey::RSA.new payload[:private_key]
-      rescue
+      rescue OpenSSL::PKey::RSAError
         raise "Failed to load SUPERMARKET_PRIVATE_KEY provided starting with:" \
               "\n#{payload[:private_key][0, 35]}"
       end
@@ -76,7 +75,7 @@ module Drone
       end
 
       #
-      # The path to write our knife keyfile to
+      # The path to our git workspace
       #
       def workspace_path
         @workspace_path ||= Pathname.new Dir.pwd
@@ -100,6 +99,13 @@ module Drone
         keyfile_path.open "w" do |f|
           f.write payload[:private_key]
         end
+      end
+
+      #
+      # Help check if keys exist in payload
+      #
+      def missing?(key)
+        payload[key].nil? || payload[key].empty?
       end
 
       # #
