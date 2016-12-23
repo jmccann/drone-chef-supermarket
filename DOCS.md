@@ -1,47 +1,75 @@
-## Config
-The following are global parameters used for configuration this plugin:
-* **user** - connects as this user
-* **server** - (default: `'https://supermarket.chef.io'`) Supermarket server to connect to
-* **ssl_verify** - (default: `true`) Enable/Disable SSL verify
+---
+date: 2016-01-01T00:00:00+00:00
+title: Chef Supermarket
+author: jmccann
+tags: [ publish, chef ]
+repo: jmccann/drone-chef-supermarket
+logo: chef_supermarket.svg
+image: jmccann/drone-chef-supermarket
+---
 
-### Secrets
-The following secret values can be set to configure the plugin.
+The Chef Supermarket plugin can publish cookbooks to Supermarket (internal or public).
+The below pipeline configuration demonstrates simple usage:
 
-* **SUPERMARKET_PRIVATE_KEY** - The private key of the **user** to authenticate with
-
-It is highly recommended to put the **SUPERMARKET_PRIVATE_KEY** into secrets so it is not exposed to users. This can be done using the [drone-cli](http://readme.drone.io/0.5/reference/cli/overview/).
-
-```
-drone secret add --image=jmccann/drone-chef-supermarket \
-  octocat/hello-world SUPERMARKET_PRIVATE_KEY @/path/to/keyfile
-```
-
-Then sign and commit the YAML file after all secrets are added.
-
-```
-drone sign octocat/hello-world
+```yaml
+pipeline:
+  hipchat:
+    image: jmccann/drone-chef-supermarket:1
 ```
 
-See [secrets](http://readme.drone.io/0.5/usage/secrets/) for additional information on secrets
+The following example will upload the cookbook to supermarket server
+`https://supermarket.chef.io` using `jsmith`.
 
-Examples
-========
-
-### Minimal Definition
-This will upload the cookbook to supermarket server https://supermarket.chef.io using `jsmith`.
 ```yaml
 pipeline:
   chef_supermarket:
-    image: jmccann/drone-chef-supermarket
+    image: jmccann/drone-chef-supermarket:1
     user: jsmith
 ```
 
-This will upload the cookbook to supermarket server https://mysupermarket.corp.com using `jsmith`.
-```yaml
+This example will upload the cookbook to supermarket server
+`https://mysupermarket.corp.com` using `jsmith` skipping ssl verification.
+
+```diff
 pipeline:
   chef_supermarket:
-    image: jmccann/drone-chef-supermarket
-    server: https://mysupermarket.corp.com
-    ssl_verify: false
-    user: jsmith
+    image: jmccann/drone-chef-supermarket:1
++   server: https://mysupermarket.corp.com
++   ssl_verify: false
++   user: jsmith
 ```
+
+# Secrets
+
+The Chef Supermarket plugin supports reading credentials from the Drone secret store.
+This is strongly recommended instead of storing credentials in the pipeline configuration in plain text.
+
+```diff
+pipeline:
+  chef_supermarket:
+    image: jmccann/drone-chef-supermarket:1
+    user: jsmith
+-   private_key: "-----BEGIN KEY-----\nasdfasd\nsdfasd\n-----END KEY-----\n"
+```
+
+The above `private_key` Yaml attribute can be replaced with the `SUPERMARKET_PRIVATE_KEY` secret environment variable.
+Please see the [Drone documentation](http://readme.drone.io/0.5/secrets-with-plugins/) to learn more about secrets.
+
+# Secret Reference
+
+SUPERMARKET_PRIVATE_KEY
+: supermarket private key
+
+# Parameter Reference
+
+user
+: connects as this user
+
+private_key
+: private key contents to auth to server with
+
+server
+: (default: `'https://supermarket.chef.io'`) Supermarket server to connect to
+
+ssl_verify
+: (default: `true`) Enable/Disable SSL verify
