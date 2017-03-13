@@ -31,7 +31,7 @@ RUN apk update && \
     perl && \
   rm -rf /var/cache/apk/*
 
-COPY pkg/drone-chef-supermarket-0.0.0.gem /tmp/
+COPY drone-chef-supermarket-0.0.0.gem /tmp/
 
 RUN gem install --no-ri --no-rdoc --local \
   /tmp/drone-chef-supermarket-0.0.0.gem

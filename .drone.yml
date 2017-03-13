@@ -7,6 +7,7 @@ pipeline:
       - bundle install --path=gems --retry=5 --jobs=5
       - bundle exec rspec
       - bundle exec rubocop
+      - gem build drone-chef-supermarket.gemspec
 
   # coverage:
   #   include: coverage/lcov/drone-chef-supermarket.lcov
