@@ -15,9 +15,8 @@ module Drone
       def initialize(config)
         self.config = config
 
-        yield(
-          self
-        ) if block_given?
+        return unless block_given?
+        yield self
       end
 
       #
@@ -27,7 +26,7 @@ module Drone
         unless config.workspace_path.join("metadata.rb").exist?
           raise "Missing cookbook metadata.rb, is this a cookbook?"
         end
-        unless config.workspace_path.join("README.md").exist?
+        unless config.workspace_path.join("README.md").exist? # rubocop:disable Style/GuardClause, Metrics/LineLength
           raise "Missing cookbook README.md"
         end
       end
@@ -50,7 +49,7 @@ module Drone
         if uploaded?
           log.info "Cookbook #{cookbook_version} " \
                    "already uploaded to " \
-                   "#{@config.payload[:server]}" if uploaded?
+                   "#{@config.payload[:server]}"
           return
         end
 
