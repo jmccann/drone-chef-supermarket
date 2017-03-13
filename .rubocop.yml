@@ -2,6 +2,16 @@ AllCops:
   Exclude:
     - gems/**/*
     - test/chef_cookbook/**/*
+    - drone-chef-supermarket.gemspec
+    - Gemfile
+
+Metrics/BlockLength:
+  Exclude:
+    - "**/*_spec.rb"
+
+Metrics/ModuleLength:
+  Exclude:
+    - "**/*_spec.rb"
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes
